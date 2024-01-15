@@ -30,7 +30,7 @@ class Item:
     def get_width(self):
         return self.width
 
-    def spawn_item(self, A, D):
+    def spawn_item(self, svg_view, dungeon):
         if self.kind == 0:
             # Speed
             self.pic_source = "flash.svg"
@@ -45,18 +45,18 @@ class Item:
             self.x = random.randrange(20, 580, 10)
             self.y = random.randrange(20, 580, 10)
             # fit to the grid
-            #self.x = self.x // 10 * 10
-            #self.y = self.y // 10 * 10
+            self.x = self.x // 10 * 10
+            self.y = self.y // 10 * 10
             # Testing whether it matches the wall layout so that items spawn in empty spaces
             if (
-                D.inner_wall_layout[self.x][self.y] == 0
-                and D.inner_wall_layout[self.x + 10][self.y] == 0
-                and D.inner_wall_layout[self.x][self.y + 10] == 0
-                and D.inner_wall_layout[self.x - 10][self.y] == 0
-                and D.inner_wall_layout[self.x][self.y - 10] == 0
-                and D.inner_wall_layout[self.x + 10][self.y + 10] == 0
-                and D.inner_wall_layout[self.x - 10][self.y - 10] == 0
+                dungeon.inner_wall_layout[self.x][self.y] == 0
+                and dungeon.inner_wall_layout[self.x + 10][self.y] == 0
+                and dungeon.inner_wall_layout[self.x][self.y + 10] == 0
+                and dungeon.inner_wall_layout[self.x - 10][self.y] == 0
+                and dungeon.inner_wall_layout[self.x][self.y - 10] == 0
+                and dungeon.inner_wall_layout[self.x + 10][self.y + 10] == 0
+                and dungeon.inner_wall_layout[self.x - 10][self.y - 10] == 0
             ):
                 self.spawn_legal = True
 
-        self.item1 = Image(self.pic_source, self.x, self.y, self.width, self.width, A)
+        self.item1 = Image(self.pic_source, self.x, self.y, self.width, self.width, svg_view)

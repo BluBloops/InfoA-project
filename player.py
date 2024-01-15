@@ -66,7 +66,7 @@ class Player:
     def get_damage_enable(self):
         return self.damage_enable
 
-    def spawn_player(self, A, D):
+    def spawn_player(self, svg_view, dungeon):
         while not self.spawn_legal:
             self.spawn_legal = False
             self.x = random.randrange(0, 600)
@@ -75,51 +75,51 @@ class Player:
             self.x = self.x // 10 * 10
             self.y = self.y // 10 * 10
             if (
-                D.inner_wall_layout[self.x][self.y] == 0
-                and D.inner_wall_layout[self.x + 10][self.y] == 0
-                and D.inner_wall_layout[self.x][self.y + 10] == 0
-                and D.inner_wall_layout[self.x - 10][self.y] == 0
-                and D.inner_wall_layout[self.x][self.y - 10] == 0
-                and D.inner_wall_layout[self.x + 10][self.y + 10] == 0
-                and D.inner_wall_layout[self.x - 10][self.y - 10] == 0
+                dungeon.inner_wall_layout[self.x][self.y] == 0
+                and dungeon.inner_wall_layout[self.x + 10][self.y] == 0
+                and dungeon.inner_wall_layout[self.x][self.y + 10] == 0
+                and dungeon.inner_wall_layout[self.x - 10][self.y] == 0
+                and dungeon.inner_wall_layout[self.x][self.y - 10] == 0
+                and dungeon.inner_wall_layout[self.x + 10][self.y + 10] == 0
+                and dungeon.inner_wall_layout[self.x - 10][self.y - 10] == 0
             ):
                 self.spawn_legal = True
 
-        self.player1 = Circle(self.x, self.y, 10, A)
+        self.player1 = Circle(self.x, self.y, 10, svg_view)
         self.player1.set_fill("black")
-        self.hBar = Rect(self.player1.get_x() - 10, self.player1.get_y() + 15, 20, 7, A)
-        self.hBar2 = Rect(self.player1.get_x() - 10, self.player1.get_y() + 15, 20, 7, A)
+        self.hBar = Rect(self.player1.get_x() - 10, self.player1.get_y() + 15, 20, 7, svg_view)
+        self.hBar2 = Rect(self.player1.get_x() - 10, self.player1.get_y() + 15, 20, 7, svg_view)
         self.hBar.set_color("black")
         self.hBar.set_fill("red")
         self.hBar2.set_fill("green")
 
-    def player_move(self, A, D):
-        self.key = A.last_key()
+    def player_move(self, svg_view:SVGView, dungeon:Dungeon):
+        self.key = svg_view.last_key()
         pos_x = self.player1.get_x()
         pos_y = self.player1.get_y()
-        wall_size = D.get_wall_size()
+        wall_size = dungeon.get_wall_size()
 
         if (
             self.key == "ArrowUp"
-            and D.inner_wall_layout[pos_x][pos_y - self.p_speed] == False
+            and dungeon.inner_wall_layout[pos_x][pos_y - self.p_speed] == False
         ):
             self.direction_x = 0
             self.direction_y = self.p_speed * -1
         elif (
             self.key == "ArrowDown"
-            and D.inner_wall_layout[pos_x][pos_y + self.p_speed] == False
+            and dungeon.inner_wall_layout[pos_x][pos_y + self.p_speed] == False
         ):
             self.direction_x = 0
             self.direction_y = self.p_speed
         elif (
             self.key == "ArrowLeft"
-            and D.inner_wall_layout[pos_x - self.p_speed][pos_y] == False
+            and dungeon.inner_wall_layout[pos_x - self.p_speed][pos_y] == False
         ):
             self.direction_x = self.p_speed * -1
             self.direction_y = 0
         elif (
             self.key == "ArrowRight"
-            and D.inner_wall_layout[pos_x + self.p_speed][pos_y] == False
+            and dungeon.inner_wall_layout[pos_x + self.p_speed][pos_y] == False
         ):
             self.direction_x = self.p_speed
             self.direction_y = 0

@@ -19,7 +19,7 @@ class Enemy:
         self.pos_x = 0
         self.pos_y = 0
 
-    def spawn_enemy(self, A, D):
+    def spawn_enemy(self, svg_view, dungeon):
         while not self.spawn_legal:
             self.spawn_legal = False
             self.x = random.randrange(20, 580, 10)
@@ -28,19 +28,19 @@ class Enemy:
             #self.x = self.x // 10 * 10
             #self.y = self.y // 10 * 10
             if (
-                D.inner_wall_layout[self.x][self.y] == 0
-                and D.inner_wall_layout[self.x + 10][self.y] == 0
-                and D.inner_wall_layout[self.x][self.y + 10] == 0
-                and D.inner_wall_layout[self.x - 10][self.y] == 0
-                and D.inner_wall_layout[self.x][self.y - 10] == 0
-                and D.inner_wall_layout[self.x + 10][self.y + 10] == 0
-                and D.inner_wall_layout[self.x - 10][self.y - 10] == 0
+                dungeon.inner_wall_layout[self.x][self.y] == 0
+                and dungeon.inner_wall_layout[self.x + 10][self.y] == 0
+                and dungeon.inner_wall_layout[self.x][self.y + 10] == 0
+                and dungeon.inner_wall_layout[self.x - 10][self.y] == 0
+                and dungeon.inner_wall_layout[self.x][self.y - 10] == 0
+                and dungeon.inner_wall_layout[self.x + 10][self.y + 10] == 0
+                and dungeon.inner_wall_layout[self.x - 10][self.y - 10] == 0
             ):
                 self.spawn_legal = True
 
-        self.enemy1 = Image("Frankenstein.svg", self.x, self.y, self.width, self.width, A)
-        self.hBar = Rect(self.enemy1.get_x() - 10, self.enemy1.get_y() + 15, 20, 7, A)
-        self.hBar2 = Rect(self.enemy1.get_x() - 10, self.enemy1.get_y() + 15, 20, 7, A)
+        self.enemy1 = Image("Frankenstein.svg", self.x, self.y, self.width, self.width, svg_view)
+        self.hBar = Rect(self.enemy1.get_x() - 10, self.enemy1.get_y() + 15, 20, 7, svg_view)
+        self.hBar2 = Rect(self.enemy1.get_x() - 10, self.enemy1.get_y() + 15, 20, 7, svg_view)
         self.hBar.set_color("black")
         self.hBar.set_fill("red")
         self.hBar2.set_fill("green")
@@ -73,23 +73,23 @@ class Enemy:
         return self.e_health
 
     # if collides...
-    def collides(self, D):
+    def collides(self, dungeon):
         return True
 
-    def enemy_move(self, A, D):
+    def enemy_move(self, svg_view, dungeon):
         direction = random.randint(0, 3)
-        wall_size = D.get_wall_size()
-        if self.collides(D):
-            if direction == 0 and not D.inner_wall_layout[self.x + wall_size // 2][self.y]:
+        wall_size = dungeon.get_wall_size()
+        if self.collides(dungeon):
+            if direction == 0 and not dungeon.inner_wall_layout[self.x + wall_size // 2][self.y]:
                 self.dy = 0
                 self.dx = 1
-            elif direction == 1 and not D.inner_wall_layout[self.x - wall_size // 2][self.y]:
+            elif direction == 1 and not dungeon.inner_wall_layout[self.x - wall_size // 2][self.y]:
                 self.dy = 0
                 self.dx = -1
-            elif direction == 2 and not D.inner_wall_layout[self.x][self.y - wall_size // 2]:
+            elif direction == 2 and not dungeon.inner_wall_layout[self.x][self.y - wall_size // 2]:
                 self.dy = -1
                 self.dx = 0
-            elif direction == 3 and not D.inner_wall_layout[self.x][self.y + wall_size // 2]:
+            elif direction == 3 and not dungeon.inner_wall_layout[self.x][self.y + wall_size // 2]:
                 self.dy = 1
                 self.dx = 0
 

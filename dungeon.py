@@ -1,6 +1,6 @@
 import random
 from algoviz import AlgoViz
-from algoviz.svg import SVGView, Image
+from algoviz.svg import SVGView, Image, Rect
 
 class Dungeon:
     def __init__(self):
@@ -12,10 +12,7 @@ class Dungeon:
         self.dungeon_size_y = 600
         self.wall_size = 20
         self.boundary_walls = 120
-
-        # Layout variable used for collision detection with walls
-        self.inner_wall_layout = [[True] * 600 for _ in range(600)]
-
+        self.inner_wall_layout = [[True for _ in range(600)] for _ in range(600)]
         self.wall_background = []
         self.dungeon = SVGView(600, 600, "Dungeon Crawler")
 
@@ -30,6 +27,9 @@ class Dungeon:
 
     def get_interior_walls(self):
         return self.interior_walls
+    
+    def get_dungeon(self):
+        return self.dungeon
 
     def set_dungeon_size_x(self, dungeon_size_x):
         self.dungeon_size_x = dungeon_size_x
@@ -41,13 +41,13 @@ class Dungeon:
         self.wall_size = wall_size
 
     def initialize_layout_array(self):
-        self.inner_wall_layout = [[True] * 600 for _ in range(600)]
+        self.inner_wall_layout = [[True for _ in range(600)] for _ in range(600)]
 
     def random_walker_algorithm(self, m_tunnels, m_tunnel_length):
         self.initialize_layout_array()
         fill_color = "#5F9EA0"
-        x = random.randrange(0, 600, self.wall_size)
-        y = random.randrange(0, 600, self.wall_size)
+        x = random.choice(range(0, 600, self.wall_size))
+        y = random.choice(range(0, 600, self.wall_size))
         max_tunnels = m_tunnels
         max_tunnel_length = m_tunnel_length
         last_direction = 0
@@ -74,15 +74,22 @@ class Dungeon:
 
                 while (
                     rand_direction == 1
-                    and (y - random_tunnel_length * self.wall_size) >= 0
+                    and (y - (random_tunnel_length * self.wall_size) >= 0)
                     and tunnel_length < random_tunnel_length
                 ):
                     for d in range(random_tunnel_length * self.wall_size):
                         if (y - d) % self.wall_size == 0:
                             tunnel_length += 1
                             self.interior_walls.append(
-                                (x, y - d, self.wall_size, self.wall_size)
+                                Rect(
+                                    x,
+                                    y - d,
+                                    self.wall_size,
+                                    self.wall_size,
+                                    self.dungeon,
+                                )
                             )
+                            self.interior_walls[-1].set_fill(fill_color)
                             for i in range(self.wall_size):
                                 for j in range(self.wall_size):
                                     self.inner_wall_layout[x + j][y - d - i] = False
@@ -91,15 +98,22 @@ class Dungeon:
 
                 while (
                     rand_direction == 2
-                    and (y + random_tunnel_length * self.wall_size) < 600
+                    and (y + (random_tunnel_length * self.wall_size)) < 600
                     and tunnel_length < random_tunnel_length
                 ):
                     for d in range(random_tunnel_length * self.wall_size):
                         if (y + d) % self.wall_size == 0:
                             tunnel_length += 1
                             self.interior_walls.append(
-                                (x, y + d, self.wall_size, self.wall_size)
+                                Rect(
+                                    x,
+                                    y + d,
+                                    self.wall_size,
+                                    self.wall_size,
+                                    self.dungeon,
+                                )
                             )
+                            self.interior_walls[-1].set_fill(fill_color)
                             for i in range(self.wall_size):
                                 for j in range(self.wall_size):
                                     self.inner_wall_layout[x + j][y + d + i] = False
@@ -108,15 +122,22 @@ class Dungeon:
 
                 while (
                     rand_direction == 3
-                    and (x - random_tunnel_length * self.wall_size) >= 0
+                    and (x - (random_tunnel_length * self.wall_size)) >= 0
                     and tunnel_length < random_tunnel_length
                 ):
                     for d in range(random_tunnel_length * self.wall_size):
                         if (x - d) % self.wall_size == 0:
                             tunnel_length += 1
                             self.interior_walls.append(
-                                (x - d, y, self.wall_size, self.wall_size)
+                                Rect(
+                                    x - d,
+                                    y,
+                                    self.wall_size,
+                                    self.wall_size,
+                                    self.dungeon,
+                                )
                             )
+                            self.interior_walls[-1].set_fill(fill_color)
                             for i in range(self.wall_size):
                                 for j in range(self.wall_size):
                                     self.inner_wall_layout[x - d - i][y + j] = False
@@ -125,15 +146,22 @@ class Dungeon:
 
                 while (
                     rand_direction == 4
-                    and (x + random_tunnel_length * self.wall_size) < 600
+                    and (x + (random_tunnel_length * self.wall_size)) < 600
                     and tunnel_length < random_tunnel_length
                 ):
                     for d in range(random_tunnel_length * self.wall_size):
                         if (x + d) % self.wall_size == 0:
                             tunnel_length += 1
                             self.interior_walls.append(
-                                (x + d, y, self.wall_size, self.wall_size)
+                                Rect(
+                                    x + d,
+                                    y,
+                                    self.wall_size,
+                                    self.wall_size,
+                                    self.dungeon,
+                                )
                             )
+                            self.interior_walls[-1].set_fill(fill_color)
                             for i in range(self.wall_size):
                                 for j in range(self.wall_size):
                                     self.inner_wall_layout[x + d + i][y + j] = False
@@ -145,10 +173,7 @@ class Dungeon:
     def spawn_dungeon(self):
         for x in range(0, 600, 20):
             for y in range(0, 600, 20):
-                self.wall_background.append(Image("wall5.png", x, y, 20, 20, self.dungeon))
+                self.wall_background.append(
+                    Image("wall5.png", x, y, 20, 20, self.dungeon)
+                )
         self.random_walker_algorithm(200, 6)
-
-# Example usage:
-# dungeon = Dungeon()
-# dungeon.spawn_dungeon()
-# print(dungeon.get_interior_walls())
