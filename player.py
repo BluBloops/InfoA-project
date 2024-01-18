@@ -1,18 +1,19 @@
 import random
 from algoviz.svg import Circle, Rect, SVGView
-from dungeon import Dungeon  # Assuming dungeon is in a separate module
+from dungeon import Dungeon
 
 class Player:
-    def __init__(self, max_health, p_speed, dmg, damage_enable):
+    def __init__(self, max_health: int, movement_speed: int, dps: int, damage_enable: bool):
         self.max_health = max_health
-        self.p_health = self.max_health
-        self.dmg = dmg
-        self.p_speed = p_speed
+        self.health = self.max_health
+        self.dps = dps
+        self.movement_speed = movement_speed
         self.damage_enable = damage_enable
         self.player1 = None
         self.hBar = None
         self.hBar2 = None
-        self.x = 0  # Coords for spawn
+        # Coordinates for spawn
+        self.x = 0  
         self.y = 0
         self.spawn_legal = False
         self.key = ""
@@ -20,21 +21,21 @@ class Player:
         self.direction_x = 0
         self.direction_y = 0
 
-    def set_p_health(self, h):
-        if self.p_health > self.max_health:
-            self.p_health = self.max_health
+    def set_health(self, health: int):
+        if self.health > self.max_health:
+            self.health = self.max_health
         else:
-            self.p_health = h
+            self.health = health
         # healthbar
         # works only if health is divisible by 20 (integer division)
-        self.hBar2.set_width(self.p_health * 100 // self.max_health // 10 * 2)
+        self.hBar2.set_width(self.health * 100 // self.max_health // 10 * 2)
         return self.hBar2.get_width()
 
-    def get_p_health(self):
-        return self.p_health
+    def get_health(self):
+        return self.health
 
-    def get_dmg(self):
-        return self.dmg
+    def get_dps(self):
+        return self.dps
 
     def get_x(self):
         return self.player1.get_x()
@@ -45,28 +46,25 @@ class Player:
     def get_radius(self):
         return self.player1.get_radius()
 
-    # speed
-    def get_p_speed(self):
-        return self.p_speed
+    def get_movement_speed(self):
+        return self.movement_speed
 
-    def inc_p_speed(self, inc):
-        self.p_speed = self.p_speed + inc  # increase Speed
+    def inc_movement_speed(self, increment: int):
+        self.movement_speed = self.movement_speed + increment  # increase speed
 
-    def dec_p_speed(self, dec):
-        self.p_speed = self.p_speed - dec  # decrease Speed
+    def dec_movement_speed(self, decrement: int):
+        self.movement_speed = self.movement_speed - decrement  # decrease speed
 
-    # color
-    def set_color(self, color):
+    def set_color(self, color: str):
         self.player1.set_fill(color)
 
-    # damage_enable
-    def set_damage_enable(self, b):
-        self.damage_enable = b
+    def set_damage_enable(self, is_enabled):
+        self.damage_enable = is_enabled
 
     def get_damage_enable(self):
         return self.damage_enable
 
-    def spawn_player(self, svg_view, dungeon):
+    def spawn_player(self, svg_view: SVGView, dungeon: Dungeon):
         while not self.spawn_legal:
             self.spawn_legal = False
             self.x = random.randrange(0, 600)
@@ -99,43 +97,45 @@ class Player:
         pos_y = self.player1.get_y()
         wall_size = dungeon.get_wall_size()
 
+        # Checks hitbox of dungeon walls: If the next movement does not land the player
+        # within the walls, it is legal
         if (
             self.key == "ArrowUp"
-            and dungeon.inner_wall_layout[pos_x][pos_y - self.p_speed] == False
+            and dungeon.inner_wall_layout[pos_x][pos_y - self.movement_speed] == False
         ):
             self.direction_x = 0
-            self.direction_y = self.p_speed * -1
+            self.direction_y = self.movement_speed * -1
         elif (
             self.key == "ArrowDown"
-            and dungeon.inner_wall_layout[pos_x][pos_y + self.p_speed] == False
+            and dungeon.inner_wall_layout[pos_x][pos_y + self.movement_speed] == False
         ):
             self.direction_x = 0
-            self.direction_y = self.p_speed
+            self.direction_y = self.movement_speed
         elif (
             self.key == "ArrowLeft"
-            and dungeon.inner_wall_layout[pos_x - self.p_speed][pos_y] == False
+            and dungeon.inner_wall_layout[pos_x - self.movement_speed][pos_y] == False
         ):
-            self.direction_x = self.p_speed * -1
+            self.direction_x = self.movement_speed * -1
             self.direction_y = 0
         elif (
             self.key == "ArrowRight"
-            and dungeon.inner_wall_layout[pos_x + self.p_speed][pos_y] == False
+            and dungeon.inner_wall_layout[pos_x + self.movement_speed][pos_y] == False
         ):
-            self.direction_x = self.p_speed
+            self.direction_x = self.movement_speed
             self.direction_y = 0
 
-        # move Player
+        # Move Player
         self.player1.move_to(
             self.player1.get_x() + self.direction_x, self.player1.get_y() + self.direction_y
         )
         self.direction_x = 0
         self.direction_y = 0
-        # move healthBar
+        # Move healthBar
         self.hBar.move_to(self.player1.get_x() - 10, self.player1.get_y() + 15)
         self.hBar2.move_to(self.player1.get_x() - 10, self.player1.get_y() + 15)
 
     def game_over(self):
-        if self.p_health >= 0:
+        if self.health >= 0:
             return True
         else:
             return False

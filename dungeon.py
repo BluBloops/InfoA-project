@@ -31,19 +31,19 @@ class Dungeon:
     def get_dungeon(self):
         return self.dungeon
 
-    def set_dungeon_size_x(self, dungeon_size_x):
+    def set_dungeon_size_x(self, dungeon_size_x: int):
         self.dungeon_size_x = dungeon_size_x
 
-    def set_dungeon_size_y(self, dungeon_size_y):
+    def set_dungeon_size_y(self, dungeon_size_y: int):
         self.dungeon_size_y = dungeon_size_y
 
-    def set_wall_size(self, wall_size):
+    def set_wall_size(self, wall_size: int):
         self.wall_size = wall_size
 
     def initialize_layout_array(self):
         self.inner_wall_layout = [[True for _ in range(600)] for _ in range(600)]
 
-    def random_walker_algorithm(self, m_tunnels, m_tunnel_length):
+    def random_walker_algorithm(self, m_tunnels: int, m_tunnel_length: int):
         self.initialize_layout_array()
         fill_color = "#5F9EA0"
         x = random.choice(range(0, 600, self.wall_size))

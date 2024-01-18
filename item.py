@@ -7,7 +7,7 @@ class Item:
         self.pic_source = ""
         self.item1 = None
         self.kind = random.randint(0, 2)
-        self.x = 0  # Spawn coords
+        self.x = 0
         self.y = 0
         self.spawn_legal = False
         self.width = 20
@@ -30,7 +30,7 @@ class Item:
     def get_width(self):
         return self.width
 
-    def spawn_item(self, svg_view, dungeon):
+    def spawn_item(self, svg_view: SVGView, dungeon: Dungeon):
         if self.kind == 0:
             # Speed
             self.pic_source = "flash.svg"
@@ -38,7 +38,7 @@ class Item:
             # Health
             self.pic_source = "Heart.svg"
         elif self.kind == 2:
-            # Barrier
+            # Armour
             self.pic_source = "shield.svg"
 
         while not self.spawn_legal:

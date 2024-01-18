@@ -1,12 +1,12 @@
 import random
 from algoviz.svg import Image, Rect, SVGView
-from dungeon import Dungeon  # Assuming dungeon is in a separate module
+from dungeon import Dungeon
 
 class Enemy:
     def __init__(self, e_health: int, e_dmg: int):
         self.max_health = 500
-        self.e_health = self.max_health
-        self.e_dmg = 200
+        self.health = self.max_health
+        self.dps = 200
         self.enemy1 = None
         self.x = 0
         self.y = 0
@@ -19,7 +19,7 @@ class Enemy:
         self.pos_x = 0
         self.pos_y = 0
 
-    def spawn_enemy(self, svg_view, dungeon):
+    def spawn_enemy(self, svg_view: SVGView, dungeon: Dungeon):
         while not self.spawn_legal:
             self.spawn_legal = False
             self.x = random.randrange(20, 580, 10)
@@ -54,29 +54,28 @@ class Enemy:
     def get_y(self):
         return self.enemy1.get_y()
 
-    def get_dmg(self):
-        return self.e_dmg
+    def get_dps(self):
+        return self.dps
 
-    def set_e_health(self, e_health):
-        self.e_health = e_health
+    def set_health(self, health):
+        self.health = health
         # healthbar
         # works only if health is divisible by 20 (integer division)
-        self.hBar2.set_width(e_health * 100 // self.max_health // 10 * 2)
+        self.hBar2.set_width(health * 100 // self.max_health // 10 * 2)
         # if enemy dies
-        if e_health <= 0:
+        if health <= 0:
             self.enemy1.__del__()
             self.hBar.__del__()
             self.hBar2.__del__()
             self.enemy1.move_to(0, 0)  # somehow the player collides with the enemy even if the enemy is not in the SVG
 
-    def get_e_health(self):
-        return self.e_health
+    def get_health(self):
+        return self.health
 
-    # if collides...
     def collides(self, dungeon):
         return True
 
-    def enemy_move(self, svg_view, dungeon):
+    def enemy_move(self, svg_view: SVGView, dungeon: Dungeon):
         direction = random.randint(0, 3)
         wall_size = dungeon.get_wall_size()
         if self.collides(dungeon):
